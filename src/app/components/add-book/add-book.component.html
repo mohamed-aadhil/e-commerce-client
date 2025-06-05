@@ -1,0 +1,39 @@
+<div class="max-w-md mx-auto bg-white p-8 rounded shadow">
+  <h2 class="text-2xl font-bold mb-6">Add New Book</h2>
+  <div *ngIf="message" class="mb-4 p-2 bg-yellow-100 text-yellow-800 rounded border border-yellow-300">{{ message }}</div>
+  <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Title</label>
+      <input class="w-full border rounded px-3 py-2" formControlName="title" />
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Author</label>
+      <input class="w-full border rounded px-3 py-2" formControlName="author" />
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Genre</label>
+      <input class="w-full border rounded px-3 py-2" formControlName="genre" />
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Price</label>
+      <input type="number" class="w-full border rounded px-3 py-2" formControlName="price" />
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Stock</label>
+      <input type="number" class="w-full border rounded px-3 py-2" formControlName="stock" />
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">ISBN</label>
+      <input class="w-full border rounded px-3 py-2" formControlName="isbn" />
+    </div>
+    <div class="mb-4">
+      <label class="block mb-1 font-semibold">Image URL</label>
+      <input class="w-full border rounded px-3 py-2" formControlName="image" (input)="updateImagePreview()" />
+    </div>
+    <div class="mb-4" *ngIf="imagePreview">
+      <label class="block mb-1 font-semibold">Preview</label>
+      <img [src]="imagePreview" alt="Book Image" class="max-h-40 rounded border" />
+    </div>
+    <button type="submit" [disabled]="bookForm.invalid" class="w-full bg-blue-600 text-white py-2 rounded font-semibold">Add Book</button>
+  </form>
+</div> 

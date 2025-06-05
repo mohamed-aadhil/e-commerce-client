@@ -1,0 +1,29 @@
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* You can add global styles to this file, and also import other style files */
+
+/* Global styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Default font for the application */
+* {
+  box-sizing: border-box;
+}
+
+/* Mat menu global overrides */
+.mat-mdc-menu-panel {
+  max-width: none !important;
+}
+
+.mat-mdc-menu-item.mat-mdc-menu-item-highlighted:not([disabled]) {
+  background: rgba(0, 0, 0, 0.04);
+}

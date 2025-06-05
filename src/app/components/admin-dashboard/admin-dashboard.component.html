@@ -1,0 +1,108 @@
+<!-- Bookstore Admin Dashboard Mock UI -->
+<app-loading *ngIf="loading" message="Loading admin dashboard..."></app-loading>
+<div *ngIf="!loading">
+  <div class="min-h-screen bg-gray-50 p-4">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold">biblio_hub</h1>
+      <div class="flex items-center space-x-4">
+        <span class="text-gray-700">Welcome, {{ userName }}</span>
+        <div class="relative">
+          <button (click)="toggleLogoutDropdown()" class="inline-flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full font-bold focus:outline-none">
+            {{ userName ? (userName[0] | uppercase) : 'A' }}
+          </button>
+          <div *ngIf="showLogoutDropdown" class="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
+            <button (click)="logout()" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <h2 class="text-xl font-semibold mb-4">Inventory Management</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col items-start">
+        <span class="text-sm text-gray-500">Total Books</span>
+        <span class="text-2xl font-bold text-blue-700">{{ stats?.totalBooks ?? '--' }}</span>
+        <span class="text-xs text-red-400" *ngIf="statsError">{{ statsError }}</span>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col items-start">
+        <span class="text-sm text-gray-500">Low Stock Items</span>
+        <span class="text-2xl font-bold text-red-600">{{ stats?.lowStock ?? '--' }}</span>
+        <span class="text-xs text-red-400 flex items-center" *ngIf="stats"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z" /></svg>Need reordering</span>
+        <span class="text-xs text-red-400" *ngIf="statsError">{{ statsError }}</span>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col items-start">
+        <span class="text-sm text-gray-500">Total Value</span>
+        <span class="text-2xl font-bold text-green-700">{{ (stats && stats.totalValue != null) ? ('$' + stats.totalValue) : '--' }}<span class="text-lg" *ngIf="stats && stats.totalValue != null">$</span></span>
+        <span class="text-xs text-gray-400" *ngIf="stats">Inventory worth</span>
+        <span class="text-xs text-red-400" *ngIf="statsError">{{ statsError }}</span>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col items-start">
+        <span class="text-sm text-gray-500">Out of Stock</span>
+        <span class="text-2xl font-bold text-orange-600">{{ stats?.outOfStock ?? '--' }}</span>
+        <span class="text-xs text-orange-400" *ngIf="stats">Items unavailable</span>
+        <span class="text-xs text-red-400" *ngIf="statsError">{{ statsError }}</span>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold">Book Inventory</h3>
+      <div class="flex items-center space-x-2">
+        <input type="text" placeholder="Search books..." class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-gray-100" 
+          [(ngModel)]="searchQuery" (input)="onSearchChange(searchQuery)" [attr.autocomplete]="'off'" />
+        <div *ngIf="searchSuggestions.length > 0" class="absolute bg-white border rounded shadow z-20 w-64 mt-1">
+          <div *ngFor="let suggestion of searchSuggestions" (click)="onSelectSuggestion(suggestion)" class="px-4 py-2 hover:bg-blue-100 cursor-pointer">
+            {{ suggestion.isbn }} - {{ suggestion.title }}
+          </div>
+        </div>
+        <div *ngIf="searchError && searchQuery" class="text-xs text-red-400">{{ searchError }}</div>
+        <select class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-gray-100"
+          [(ngModel)]="selectedGenre" (change)="onGenreChange(selectedGenre)">
+          <option value="All Genres">All Genres</option>
+          <option *ngFor="let genre of genres" [value]="genre">{{ genre }}</option>
+        </select>
+        <div *ngIf="genresError" class="text-xs text-red-400">{{ genresError }}</div>
+        <button routerLink="/add-book" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold">+ Add Book</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+      <table class="min-w-full text-left text-sm">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="py-3 px-4 font-semibold">ISBN</th>
+            <th class="py-3 px-4 font-semibold">Title</th>
+            <th class="py-3 px-4 font-semibold">Author</th>
+            <th class="py-3 px-4 font-semibold">Genre</th>
+            <th class="py-3 px-4 font-semibold">Price</th>
+            <th class="py-3 px-4 font-semibold">Stock</th>
+            <th class="py-3 px-4 font-semibold">Status</th>
+            <th class="py-3 px-4 font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="books.length === 0">
+            <td colspan="8" class="text-center py-4 text-gray-400">{{ booksError || 'No data found' }}</td>
+          </tr>
+          <tr *ngFor="let book of books">
+            <td class="py-2 px-4">{{ book.isbn }}</td>
+            <td class="py-2 px-4">{{ book.title }}</td>
+            <td class="py-2 px-4">{{ book.author }}</td>
+            <td class="py-2 px-4"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">{{ book.genre }}</span></td>
+            <td class="py-2 px-4">${{ book.price }}</td>
+            <td class="py-2 px-4">{{ book.stock }}</td>
+            <td class="py-2 px-4">
+              <span *ngIf="book.status === 'Active'" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Active</span>
+              <span *ngIf="book.status === 'Low Stock'" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Low Stock</span>
+              <span *ngIf="book.status === 'Out of Stock'" class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">Out of Stock</span>
+            </td>
+            <td class="py-2 px-4 flex space-x-2">
+              <button (click)="editBook(book)" class="text-blue-600 hover:underline">Edit</button>
+              <button (click)="deleteBook(book)" class="text-red-600 hover:underline">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

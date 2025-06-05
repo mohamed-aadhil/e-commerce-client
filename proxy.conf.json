@@ -1,0 +1,19 @@
+{
+  "/api/admin-dashboard": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api": {
+    "target": "http://localhost:5056",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "withCredentials": true,
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  }
+}
+

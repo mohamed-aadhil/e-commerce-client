@@ -1,0 +1,24 @@
+<div class="min-h-screen bg-gray-50 p-4">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">biblio_hub</h1>
+    <div class="flex items-center space-x-4">
+      <div class="relative">
+        <button *ngIf="userName; else signInIcon" (click)="onUserIconClick()" class="inline-flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full font-bold focus:outline-none">
+          {{ userName[0] | uppercase }}
+        </button>
+        <ng-template #signInIcon>
+          <button (click)="onUserIconClick()" class="inline-flex items-center justify-center w-8 h-8 bg-gray-300 text-gray-700 rounded-full font-bold focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          </button>
+        </ng-template>
+        <div *ngIf="showDropdown" class="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-10">
+          <button (click)="logout()" class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4">
+    <p>Customer Dashboard component works! (mock)</p>
+  </div>
+</div>
