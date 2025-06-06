@@ -1,0 +1,39 @@
+.category-icon {
+  font-size: 24px;
+}
+
+.group {
+  transition: transform 0.2s ease-in-out;
+}
+
+.group:hover {
+  transform: translateY(-4px);
+}
+
+.hero-section {
+  background: linear-gradient(to right, #ffffff, #f3f4f6);
+}
+
+.featured-section {
+  position: relative;
+}
+
+.featured-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+}
+
+.category-card {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+} 
