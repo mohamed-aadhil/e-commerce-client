@@ -66,8 +66,8 @@
       </div>
     </div>
 
-    <div class="overflow-x-auto bg-white rounded-lg shadow">
-      <table class="min-w-full text-left text-sm">
+    <div class="overflow-x-auto bg-white rounded-lg shadow w-full" style="max-height: 400px;">
+      <table class="min-w-full w-full text-left text-sm table-auto">
         <thead class="bg-gray-100">
           <tr>
             <th class="py-3 px-4 font-semibold">ISBN</th>
@@ -92,9 +92,8 @@
             <td class="py-2 px-4">${{ book.price }}</td>
             <td class="py-2 px-4">{{ book.stock }}</td>
             <td class="py-2 px-4">
-              <span *ngIf="book.status === 'Active'" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Active</span>
-              <span *ngIf="book.status === 'Low Stock'" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Low Stock</span>
-              <span *ngIf="book.status === 'Out of Stock'" class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">Out of Stock</span>
+              <span *ngIf="book.stock <= 10" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Low Stock</span>
+              <span *ngIf="book.stock > 10" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">Active</span>
             </td>
             <td class="py-2 px-4 flex space-x-2">
               <button (click)="editBook(book)" class="text-blue-600 hover:underline">Edit</button>

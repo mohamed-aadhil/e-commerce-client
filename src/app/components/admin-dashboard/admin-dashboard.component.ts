@@ -22,15 +22,15 @@ interface Book {
   genre: string;
   price: number;
   stock: number;
-  status: string;
+  bookname?: string;
 }
 
 // Mock API endpoints for backend reference
-const API_BASE = '/api/admin-dashboard/books';
-const API_STATS = '/api/admin-dashboard/books/stats';
-const API_GENRES = '/api/admin-dashboard/books/genres'; // GET all genres
-const API_BOOKS_BY_GENRE = (genre: string) => `/api/admin-dashboard/books/genres/${encodeURIComponent(genre)}/books`; // GET books by genre
-const API_SEARCH_BOOKS = (query: string) => `/api/admin-dashboard/books/search?isbn=${encodeURIComponent(query)}`; // GET search by ISBN
+const API_BASE = '/api/books';
+const API_STATS = '/api/books/stats';
+const API_GENRES = '/api/books/genres'; // GET all genres
+const API_BOOKS_BY_GENRE = (genre: string) => `/api/books/genres/${encodeURIComponent(genre)}/books`; // GET books by genre
+const API_SEARCH_BOOKS = (query: string) => `/api/books/search?isbn=${encodeURIComponent(query)}`; // GET search by ISBN
 const API_ADD_BOOK = API_BASE; // POST
 const API_UPDATE_BOOK = (isbn: string) => `${API_BASE}/${isbn}`; // PUT
 const API_DELETE_BOOK = (isbn: string) => `${API_BASE}/${isbn}`; // DELETE
@@ -95,13 +95,16 @@ export class AdminDashboardComponent implements OnInit {
 
   fetchBooks() {
     console.log('fetchBooks: Token before request:', this.authService.getToken());
-    this.http.get<Book[]>(this.booksUrl).pipe(
+    this.http.get<any[]>(this.booksUrl).pipe(
       catchError(() => {
         this.booksError = 'No data found';
         return of([]);
       })
     ).subscribe(data => {
-      this.books = data || [];
+      this.books = (data || []).map(book => ({
+        ...book,
+        title: book.bookname || ''
+      }));
     });
   }
 
@@ -139,20 +142,25 @@ export class AdminDashboardComponent implements OnInit {
       this.searchSuggestions = [];
       return;
     }
-    this.http.get<Book[]>(API_SEARCH_BOOKS(query)).pipe(
+    this.http.get<any[]>(API_SEARCH_BOOKS(query)).pipe(
       catchError(() => {
         this.searchError = 'No data found';
         return of([]);
       })
     ).subscribe(data => {
-      this.searchSuggestions = data || [];
+      this.searchSuggestions = (data || []).map(book => ({
+        ...book,
+        title: book.bookname || ''
+      }));
     });
   }
 
   onSelectSuggestion(book: Book) {
-    this.books = [book];
+    this.books = [{ ...book, title: book.bookname || '' }];
+    if (!book.bookname) this.books[0].title = '';
     this.searchSuggestions = [];
     this.searchQuery = book.isbn;
+    this.booksError = '';
   }
 
   toggleLogoutDropdown() {
